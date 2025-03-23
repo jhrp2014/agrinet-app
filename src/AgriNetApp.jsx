@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react';
 
 const AgriNetApp = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
   const [showRegister, setShowRegister] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
-  const [registerForm, setRegisterForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: '',
-    location: ''
+  const [registerForm, setRegisterForm] = useState({ 
+    name: '', 
+    email: '', 
+    password: '', 
+    confirmPassword: '' 
   });
+  const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
 
   useEffect(() => {
@@ -26,6 +25,7 @@ const AgriNetApp = () => {
 
   const handleLoginChange = (e) => {
     setLoginForm({ ...loginForm, [e.target.name]: e.target.value });
+    setLoginError('');
   };
 
   const handleRegisterChange = (e) => {
@@ -36,9 +36,11 @@ const AgriNetApp = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     if (loginForm.email && loginForm.password) {
-      localStorage.setItem('agrinetUser', JSON.stringify({ email: loginForm.email }));
+      localStorage.setItem('agrinetUser', JSON.stringify(loginForm));
       setIsAuthenticated(true);
       setShowLogin(false);
+    } else {
+      setLoginError('Preencha todos os campos.');
     }
   };
 
@@ -52,15 +54,9 @@ const AgriNetApp = () => {
       setRegisterError('As senhas não coincidem.');
       return;
     }
-    localStorage.setItem('agrinetUser', JSON.stringify({ email: registerForm.email, name: registerForm.name }));
+    localStorage.setItem('agrinetUser', JSON.stringify(registerForm));
     setIsAuthenticated(true);
     setShowRegister(false);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('agrinetUser');
-    setIsAuthenticated(false);
-    setShowLogin(true);
   };
 
   const switchToRegister = () => {
@@ -73,27 +69,103 @@ const AgriNetApp = () => {
     setShowLogin(true);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('agrinetUser');
+    setIsAuthenticated(false);
+    setShowLogin(true);
+  };
+
   if (!isAuthenticated) {
     return (
-      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
         {showLogin && (
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h2 className="text-2xl font-bold text-center text-green-700 mb-6">Entrar na AgriNet</h2>
+          <div className="bg-white p-6 rounded shadow w-full max-w-md">
+            <h2 className="text-2xl font-bold mb-4 text-green-700">Login</h2>
             <form onSubmit={handleLogin}>
-              <input name="email" type="email" value={loginForm.email} onChange={handleLoginChange} placeholder="Email" className="w-full p-2 mb-4 border rounded" />
-              <input name="password" type="password" value={loginForm.password} onChange={handleLoginChange} placeholder="Senha" className="w-full p-2 mb-4 border rounded" />
+              <input
+                name="email"
+                type="email"
+                value={loginForm.email}
+                onChange={handleLoginChange}
+                placeholder="Email"
+                className="w-full p-2 mb-3 border rounded"
+              />
+              <input
+                name="password"
+                type="password"
+                value={loginForm.password}
+                onChange={handleLoginChange}
+                placeholder="Senha"
+                className="w-full p-2 mb-3 border rounded"
+              />
+              {loginError && <p className="text-red-600 text-sm mb-3">{loginError}</p>}
               <button type="submit" className="w-full bg-green-600 text-white p-2 rounded">Entrar</button>
             </form>
-            <p className="text-center mt-4">Não tem uma conta? <button onClick={switchToRegister} className="text-green-600">Cadastre-se</button></p>
+            <p className="text-center mt-4">
+              Não tem uma conta?{' '}
+              <button onClick={switchToRegister} className="text-green-600 font-medium">Cadastre-se</button>
+            </p>
           </div>
         )}
 
         {showRegister && (
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h2 className="text-2xl font-bold text-center text-green-700 mb-6">Criar Conta</h2>
-            {registerError && <p className="text-red-500 mb-2 text-center">{registerError}</p>}
+          <div className="bg-white p-6 rounded shadow w-full max-w-md">
+            <h2 className="text-2xl font-bold mb-4 text-green-700">Cadastro</h2>
             <form onSubmit={handleRegister}>
-              <input name="name" type="text" value={registerForm.name} onChange={handleRegisterChange} placeholder="Nome completo" className="w-full p-2 mb-3 border rounded" />
-              <input name="email" type="email" value={registerForm.email} onChange={handleRegisterChange} placeholder="Email" className="w-full p-2 mb-3 border rounded" />
-              <input name="password" type="password" value={registerForm.password} onChange={handleRegisterChange} placeholder="Senha" className="w-full p-2 mb-3 border rounded" />
-              <input name="confirmPassword" type="password" value={registerForm.confirmPassword} onChange={handleRegisterChange} placeholder="Confirmar Senha" className
+              <input
+                name="name"
+                type="text"
+                value={registerForm.name}
+                onChange={handleRegisterChange}
+                placeholder="Nome completo"
+                className="w-full p-2 mb-3 border rounded"
+              />
+              <input
+                name="email"
+                type="email"
+                value={registerForm.email}
+                onChange={handleRegisterChange}
+                placeholder="Email"
+                className="w-full p-2 mb-3 border rounded"
+              />
+              <input
+                name="password"
+                type="password"
+                value={registerForm.password}
+                onChange={handleRegisterChange}
+                placeholder="Senha"
+                className="w-full p-2 mb-3 border rounded"
+              />
+              <input
+                name="confirmPassword"
+                type="password"
+                value={registerForm.confirmPassword}
+                onChange={handleRegisterChange}
+                placeholder="Confirmar Senha"
+                className="w-full p-2 mb-3 border rounded"
+              />
+              {registerError && <p className="text-red-600 text-sm mb-3">{registerError}</p>}
+              <button type="submit" className="w-full bg-green-600 text-white p-2 rounded">Cadastrar</button>
+            </form>
+            <p className="text-center mt-4">
+              Já tem uma conta?{' '}
+              <button onClick={switchToLogin} className="text-green-600 font-medium">Fazer login</button>
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen p-6 bg-gray-50">
+      <div className="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+        <h1 className="text-2xl font-bold mb-4 text-green-700">Bem-vindo à AgriNet!</h1>
+        <p className="mb-4">Você está autenticado. Aqui ficará o feed do agronegócio.</p>
+        <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded">Sair</button>
+      </div>
+    </div>
+  );
+};
+
+export default AgriNetApp;
