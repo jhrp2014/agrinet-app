@@ -117,6 +117,10 @@ const AgriNetApp = () => {
         </div>
         <div className="mb-6">
           <button onClick={() => setActiveTab('feed')} className={`mr-4 ${activeTab === 'feed' ? 'font-bold' : ''}`}>Feed</button>
+          <button onClick={() => setActiveTab('events')} className={`mr-4 ${activeTab === 'events' ? 'font-bold' : ''}`}>Eventos</button>
+          <button onClick={() => setActiveTab('profile')} className={`${activeTab === 'profile' ? 'font-bold' : ''}`}>Perfil</button>
+        </div>
+          <button onClick={() => setActiveTab('feed')} className={`mr-4 ${activeTab === 'feed' ? 'font-bold' : ''}`}>Feed</button>
           <button onClick={() => setActiveTab('events')} className={`${activeTab === 'events' ? 'font-bold' : ''}`}>Eventos</button>
         </div>
         {activeTab === 'feed' && (
@@ -141,6 +145,15 @@ const AgriNetApp = () => {
             ))}
           </div>
         )}
+
+        {activeTab === 'profile' && (
+          <div>
+            <h2 className="text-xl font-bold mb-3">Meu Perfil</h2>
+            <p><strong>Nome:</strong> {JSON.parse(localStorage.getItem('agrinetUser'))?.name || 'Nome não informado'}</p>
+            <p><strong>Email:</strong> {JSON.parse(localStorage.getItem('agrinetUser'))?.email || 'Email não informado'}</p>
+          </div>
+        )}
+
       </div>
     </div>
   );
